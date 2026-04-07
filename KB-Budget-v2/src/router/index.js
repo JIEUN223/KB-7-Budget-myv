@@ -13,6 +13,11 @@ const router = createRouter({
           component: () => import('../views/HomeView.vue'),
         },
         {
+          path: 'add-transaction',
+          name: 'add-transaction',
+          component: () => import('../views/AddTansaction.vue'),
+        },
+        {
           path: 'stats',
           name: 'stats',
           component: () => import('../views/StatsView.vue'),
