@@ -6,12 +6,25 @@ import FilterModal from '@/components/FilterModal.vue';
 import Transaction from '@/components/Transaction.vue';
 import AddTransactionFab from '@/components/AddTransactionFab.vue'
 import ReceiptPledge from '@/components/ReceiptPledge.vue'
+// import FlexPanel from '@/components/FlexPanel.vue'       // 플렉스형
+// import SocialPanel from '@/components/SocialPanel.vue'   // 사회형
+// import DripPanel from '@/components/DripPanel.vue'       // 가랑비형
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 const { currentUser } = storeToRefs(userStore)
 
-const isPlanner = computed(() => currentUser.value?.spendingType === '플렉스형')
+/* 유형별 전용 컴포넌트 맵 — 컴포넌트 준비되면 import 후 여기에 추가 */
+const TYPE_COMPONENT_MAP = {
+  '계획형': ReceiptPledge,
+  '플렉스형': null,   // FlexPanel
+  '사회형': null,     // SocialPanel
+  '가랑비형': null,   // DripPanel
+}
+
+const typeComponent = computed(() =>
+  TYPE_COMPONENT_MAP[currentUser.value?.spendingType] ?? null
+)
 
 const filterModalOpen = ref(false);
 const filterFocusSection = ref('date');
@@ -24,15 +37,15 @@ function openFilter(section) {
 
 <template>
   <div class="home">
-    <!-- 계획형 유저 전용 다짐 출력소 -->
-    <ReceiptPledge v-if="isPlanner" />
+    <!-- 유형별 전용 패널 -->
+    <component :is="typeComponent" v-if="typeComponent" />
 
     <Filter
       @open-date="openFilter('date')"
       @open-category="openFilter('category')"
     />
     <Transaction />
-    <FilterModal
+    <FilterModal 
       v-model="filterModalOpen"
       :focus-section="filterFocusSection"
     />
