@@ -1,8 +1,11 @@
-<script setup></script>
+<script setup>
+import Calendar from '@/components/Calendar.vue';
+</script>
 
 <template>
   <div class="page-placeholder">
-    <p>통계 화면을 여기에 연결하면 됩니다.</p>
+    <!-- <p>통계 화면을 여기에 연결하면 됩니다.</p> -->
+    <Calendar />
   </div>
 </template>
 
