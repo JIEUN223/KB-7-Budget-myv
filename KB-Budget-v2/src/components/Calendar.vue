@@ -7,13 +7,6 @@
       <button @click="nextMonth" class="nav-btn">→</button>
     </div>
 
-    <!-- 선택된 날짜 표시 -->
-    <div class="selected-date-display">
-      <button @click="goToToday" class="today-btn">
-        오늘: {{ selectedDateKorean }}
-      </button>
-    </div>
-
     <!-- 요일 헤더 -->
     <div class="weekdays">
       <div
@@ -79,17 +72,18 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-})
+});
 
-const emit = defineEmits(['update:month'])
+const emit = defineEmits(['update:month']);
 
 const transactionStore = useTransactionStore();
 const calendarStore = useCalendarStore();
 
-const initialMonth = props.month && /^\d{4}-\d{2}$/.test(props.month)
-  ? props.month
-  : new Date().toISOString().slice(0, 7)
-const [initialYear, initialMon] = initialMonth.split('-').map(Number)
+const initialMonth =
+  props.month && /^\d{4}-\d{2}$/.test(props.month)
+    ? props.month
+    : new Date().toISOString().slice(0, 7);
+const [initialYear, initialMon] = initialMonth.split('-').map(Number);
 const currentYear = ref(initialYear);
 const currentMonth = ref(initialMon);
 
@@ -194,7 +188,10 @@ function goToToday() {
 }
 
 function emitCurrentMonth() {
-  const ym = `${currentYear.value}-${String(currentMonth.value).padStart(2, '0')}`;
+  const ym = `${currentYear.value}-${String(currentMonth.value).padStart(
+    2,
+    '0'
+  )}`;
   emit('update:month', ym);
 }
 
@@ -213,17 +210,21 @@ watch(
     if (y === currentYear.value && m === currentMonth.value) return;
     currentYear.value = y;
     currentMonth.value = m;
-  },
+  }
 );
 </script>
 
 <style scoped>
 .calendar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 18px 16px 20px;
   background: var(--color-bg);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--color-border-light);
+  box-sizing: border-box;
 }
 
 .calendar-header {
@@ -302,7 +303,7 @@ watch(
 .weekday {
   text-align: center;
   font-weight: 700;
-  padding: 8px 0;
+  padding: 4px 0;
   font-size: 0.6875rem;
   color: var(--color-text-secondary);
   letter-spacing: 0.06em;
@@ -310,13 +311,17 @@ watch(
 }
 
 .dates-grid {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  grid-template-rows: repeat(6, 1fr);
+  gap: 4px;
+  min-height: 0;
 }
 
 .date-cell {
-  min-height: 120px;
+  height: auto;
+  min-height: 0;
   border: 1px solid var(--color-border-light);
   background: var(--color-bg);
   border-radius: 12px;
@@ -325,21 +330,24 @@ watch(
   transition: all 0.2s;
   display: flex;
   flex-direction: column;
-  padding: 8px;
-  align-items: flex-start;
+  padding: 2px;
+  overflow: hidden;
 }
 
 .date-number {
+  font-size: 11px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: var(--color-text);
 }
 
 .date-content {
-  flex: 1;
   width: 100%;
-  font-size: 12px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* 위쪽 정렬 */
+  gap: 1px;
 }
 
 .date-cell:hover:not(.other-month) {
@@ -385,18 +393,17 @@ watch(
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .tx-amount {
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 9px;
+  transform-origin: center;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: -0.5px;
 }
 
 .tx-row.income .dot {

@@ -39,6 +39,14 @@
       "category": "생활용품",
       "memo": "test",
       "id": "JNmBqS-"
+    },
+    {
+      "type": "income",
+      "date": "2026-04-01",
+      "amount": 1000,
+      "category": "용돈",
+      "memo": "",
+      "id": "w3FJxwC"
     }
   ],
   "categories": [
