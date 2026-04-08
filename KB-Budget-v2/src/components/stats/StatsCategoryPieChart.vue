@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue'
-import { buildPieSlices } from '@/utils/statsPie'
+import { computed } from 'vue';
+import { buildPieSlices } from '@/utils/statsPie';
 
 const props = defineProps({
   slices: {
@@ -16,13 +16,13 @@ const props = defineProps({
     type: String,
     default: '내역이 없습니다.',
   },
-})
+});
 
-const cx = computed(() => props.size / 2)
-const cy = computed(() => props.size / 2)
+const cx = computed(() => props.size / 2);
+const cy = computed(() => props.size / 2);
 /** 차트 세로를 줄이기 위해 반지름·라벨 거리 축소 */
-const r = computed(() => Math.round(props.size * 0.2))
-const labelRadius = computed(() => Math.round(props.size * 0.36))
+const r = computed(() => Math.round(props.size * 0.2));
+const labelRadius = computed(() => Math.round(props.size * 0.36));
 
 const pieSlices = computed(() =>
   buildPieSlices(props.slices, {
@@ -30,16 +30,20 @@ const pieSlices = computed(() =>
     cy: cy.value,
     r: r.value,
     labelRadius: labelRadius.value,
-  }),
-)
+  })
+);
 
-const hasData = computed(() => pieSlices.value.length > 0)
+const hasData = computed(() => pieSlices.value.length > 0);
 </script>
 
 <template>
   <div class="chart-panel">
     <div v-if="hasData" class="chart-svg-wrap">
-      <svg class="chart-svg" :viewBox="`0 0 ${size} ${size}`" aria-hidden="true">
+      <svg
+        class="chart-svg"
+        :viewBox="`0 0 ${size} ${size}`"
+        aria-hidden="true"
+      >
         <template v-for="(slice, idx) in pieSlices" :key="slice.category + idx">
           <circle
             v-if="slice.fullCircle"
@@ -71,8 +75,12 @@ const hasData = computed(() => pieSlices.value.length > 0)
             :y="slice.label.y"
             class="chart-label"
           >
-            <tspan :x="slice.label.x" dy="-0.3em">{{ slice.label.title }}</tspan>
-            <tspan :x="slice.label.x" dy="1.05em" class="chart-label__pct">{{ slice.label.pct }}</tspan>
+            <tspan :x="slice.label.x" dy="-0.3em">
+              {{ slice.label.title }}
+            </tspan>
+            <tspan :x="slice.label.x" dy="1.05em" class="chart-label__pct">
+              {{ slice.label.pct }}
+            </tspan>
           </text>
         </template>
       </svg>

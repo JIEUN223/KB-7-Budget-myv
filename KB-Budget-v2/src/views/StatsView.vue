@@ -1,60 +1,64 @@
 <script setup>
-import Calendar from '@/components/Calendar.vue'
-import { computed, ref, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useTransactionStore } from '@/stores/transaction'
-import { useStatsMonth } from '@/utils/useStatsMonth'
-import StatsMonthNav from '@/components/stats/StatsMonthNav.vue'
-import StatsSummaryStrip from '@/components/stats/StatsSummaryStrip.vue'
-import StatsIncomeExpenseTabs from '@/components/stats/StatsIncomeExpenseTabs.vue'
-import StatsCategoryPieChart from '@/components/stats/StatsCategoryPieChart.vue'
+import Calendar from '@/components/Calendar.vue';
+import { computed, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useTransactionStore } from '@/stores/transaction';
+import { useStatsMonth } from '@/utils/useStatsMonth';
+import StatsMonthNav from '@/components/stats/StatsMonthNav.vue';
+import StatsSummaryStrip from '@/components/stats/StatsSummaryStrip.vue';
+import StatsIncomeExpenseTabs from '@/components/stats/StatsIncomeExpenseTabs.vue';
+import StatsCategoryPieChart from '@/components/stats/StatsCategoryPieChart.vue';
 
-const transactionStore = useTransactionStore()
-const { transactions } = storeToRefs(transactionStore)
+const transactionStore = useTransactionStore();
+const { transactions } = storeToRefs(transactionStore);
 
-const { selectedMonth, txsInMonth, incomeTotal, expenseTotal, netTotal } = useStatsMonth(transactions)
+const { selectedMonth, txsInMonth, incomeTotal, expenseTotal, netTotal } =
+  useStatsMonth(transactions);
 
-const activeTab = ref('expense')
+const activeTab = ref('expense');
 
 function formatWon(n) {
-  return `${new Intl.NumberFormat('ko-KR').format(Math.round(n))}원`
+  return `${new Intl.NumberFormat('ko-KR').format(Math.round(n))}원`;
 }
 
 function formatNetWon(n) {
-  const rounded = Math.round(n)
-  const sign = rounded < 0 ? '-' : ''
-  const abs = Math.abs(rounded)
-  return `${sign}${new Intl.NumberFormat('ko-KR').format(abs)}원`
+  const rounded = Math.round(n);
+  const sign = rounded < 0 ? '-' : '';
+  const abs = Math.abs(rounded);
+  return `${sign}${new Intl.NumberFormat('ko-KR').format(abs)}원`;
 }
 
 const categoryTotalsForTab = computed(() => {
-  const type = activeTab.value
-  const map = new Map()
+  const type = activeTab.value;
+  const map = new Map();
   for (const tx of txsInMonth.value) {
-    if (tx.type !== type) continue
-    const cat = tx.category || '기타'
-    map.set(cat, (map.get(cat) || 0) + Number(tx.amount))
+    if (tx.type !== type) continue;
+    const cat = tx.category || '기타';
+    map.set(cat, (map.get(cat) || 0) + Number(tx.amount));
   }
   const rows = [...map.entries()]
     .map(([category, amount]) => ({ category, amount }))
-    .sort((a, b) => b.amount - a.amount)
-  const sum = rows.reduce((s, r) => s + r.amount, 0)
+    .sort((a, b) => b.amount - a.amount);
+  const sum = rows.reduce((s, r) => s + r.amount, 0);
   return rows.map((r) => ({
     ...r,
     percent: sum > 0 ? (r.amount / sum) * 100 : 0,
-  }))
-})
+  }));
+});
 
 const emptyHint = computed(
-  () => `이 달에 ${activeTab.value === 'income' ? '수입' : '지출'} 내역이 없습니다.`,
-)
+  () =>
+    `이 달에 ${activeTab.value === 'income' ? '수입' : '지출'} 내역이 없습니다.`
+);
 
 watch(selectedMonth, () => {
-  const hasIncome = txsInMonth.value.some((t) => t.type === 'income')
-  const hasExpense = txsInMonth.value.some((t) => t.type === 'expense')
-  if (activeTab.value === 'income' && !hasIncome && hasExpense) activeTab.value = 'expense'
-  if (activeTab.value === 'expense' && !hasExpense && hasIncome) activeTab.value = 'income'
-})
+  const hasIncome = txsInMonth.value.some((t) => t.type === 'income');
+  const hasExpense = txsInMonth.value.some((t) => t.type === 'expense');
+  if (activeTab.value === 'income' && !hasIncome && hasExpense)
+    activeTab.value = 'expense';
+  if (activeTab.value === 'expense' && !hasExpense && hasIncome)
+    activeTab.value = 'income';
+});
 </script>
 
 <template>
@@ -68,7 +72,11 @@ watch(selectedMonth, () => {
         :expense-label="formatWon(expenseTotal)"
       />
 
-      <StatsCategoryPieChart :slices="categoryTotalsForTab" :empty-hint="emptyHint" :size="300" />
+      <StatsCategoryPieChart
+        :slices="categoryTotalsForTab"
+        :empty-hint="emptyHint"
+        :size="300"
+      />
 
       <StatsSummaryStrip
         :income-label="formatWon(incomeTotal)"
@@ -87,12 +95,33 @@ watch(selectedMonth, () => {
 .stats-page {
   max-width: 430px;
   margin: 0 auto;
-  padding: 0.2rem 0.65rem 0.35rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
   background: #fff;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .stats-panel {
-  margin-bottom: -0.35rem;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: 16px;
+  overflow: visible;
+}
+
+.calendar-panel {
+  flex-grow: 3;
+  flex-shrink: 0;
+  flex-basis: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 </style>
