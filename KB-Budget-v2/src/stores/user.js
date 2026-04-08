@@ -1,30 +1,44 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import seed from '../../db.json'
-import { fetchUser } from '../api/users'
-
-/** 로그인 화면 없이 가정하는 세션 유저 (db.json users id) */
-export const ASSUMED_SESSION_USER_ID = '1'
+import { fetchUserByLoginId } from '../api/users'
 
 export const useUserStore = defineStore('user', () => {
   const currentUser = ref(null)
-  const loadError = ref(null)
+  const loginError = ref(null)
 
-  async function loadCurrentUser() {
-    loadError.value = null
+  /**
+   * loginId와 password로 로그인을 시도합니다.
+   * @param {string} loginId - 사용자 아이디
+   * @param {string} password - 비밀번호
+   * @returns {boolean} 로그인 성공 여부
+   */
+  async function login(loginId, password) {
+    loginError.value = null
     try {
-      currentUser.value = await fetchUser(ASSUMED_SESSION_USER_ID)
+      const user = await fetchUserByLoginId(loginId)
+      if (!user || user.password !== password) {
+        loginError.value = '아이디 또는 비밀번호가 올바르지 않습니다.'
+        return false
+      }
+      currentUser.value = user
+      return true
     } catch (e) {
-      loadError.value = e
-      const fallback = seed.users?.find((u) => String(u.id) === ASSUMED_SESSION_USER_ID)
-      currentUser.value = fallback ? { ...fallback } : null
+      loginError.value = '로그인 중 오류가 발생했습니다.'
       console.error(e)
+      return false
     }
+  }
+
+  /** 로그아웃: 현재 유저 정보를 초기화합니다. */
+  function logout() {
+    currentUser.value = null
+    loginError.value = null
   }
 
   return {
     currentUser,
-    loadError,
-    loadCurrentUser,
+    loginError,
+    login,
+    logout,
   }
 })

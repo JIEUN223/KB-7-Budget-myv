@@ -1,8 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+    },
     {
       path: '/',
       component: () => import('../layouts/MainLayout.vue'),
@@ -30,6 +36,14 @@ const router = createRouter({
       ],
     },
   ],
+})
+
+// 로그인 상태가 아니면 /login으로 리다이렉트
+router.beforeEach((to) => {
+  const userStore = useUserStore()
+  if (to.name !== 'login' && !userStore.currentUser) {
+    return { name: 'login' }
+  }
 })
 
 export default router
