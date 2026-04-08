@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue'),
     },
     {
+      path: '/signup',
+      name: 'signup',
+      component: () => import('../views/SignupView.vue'),
+    },
+    {
       path: '/',
       component: () => import('../layouts/MainLayout.vue'),
       children: [
@@ -41,7 +46,7 @@ const router = createRouter({
 // 로그인 상태가 아니면 /login으로 리다이렉트
 router.beforeEach((to) => {
   const userStore = useUserStore()
-  if (to.name !== 'login' && !userStore.currentUser) {
+  if (to.name !== 'login' && to.name !== 'signup' && !userStore.currentUser) {
     return { name: 'login' }
   }
 })

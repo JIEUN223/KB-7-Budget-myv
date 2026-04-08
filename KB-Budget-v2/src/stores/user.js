@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { fetchUserByLoginId } from '../api/users'
+import { fetchUserByLoginId, createUser } from '../api/users'
 
 export const useUserStore = defineStore('user', () => {
   const currentUser = ref(null)
@@ -35,10 +35,35 @@ export const useUserStore = defineStore('user', () => {
     loginError.value = null
   }
 
+  /**
+   * 회원가입을 처리합니다.
+   * @param {{ loginId, password, username }} payload
+   * @returns {boolean} 성공 여부
+   */
+  async function signup(payload) {
+    loginError.value = null
+    try {
+      // 아이디 중복 확인
+      const existing = await fetchUserByLoginId(payload.loginId)
+      if (existing) {
+        loginError.value = '이미 사용 중인 아이디입니다.'
+        return false
+      }
+      const newUser = await createUser(payload)
+      currentUser.value = newUser
+      return true
+    } catch (e) {
+      loginError.value = '회원가입 중 오류가 발생했습니다.'
+      console.error(e)
+      return false
+    }
+  }
+
   return {
     currentUser,
     loginError,
     login,
     logout,
+    signup,
   }
 })

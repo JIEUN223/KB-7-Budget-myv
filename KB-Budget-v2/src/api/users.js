@@ -11,3 +11,7 @@ export function fetchUser(id) {
 export function fetchUserByLoginId(loginId) {
   return client.get(`/users?loginId=${loginId}`).then((res) => res.data[0] ?? null)
 }
+
+export function createUser(payload) {
+  return client.post('/users', payload).then((res) => res.data)
+}

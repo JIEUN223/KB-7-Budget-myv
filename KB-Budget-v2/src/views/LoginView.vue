@@ -88,6 +88,11 @@ async function handleLogin() {
             <span v-if="!isLoading" class="login-btn__text">시작하기</span>
             <span v-else class="login-btn__spinner" aria-label="로그인 중" />
           </button>
+
+          <p class="signup-link">
+            계정이 없으신가요?
+            <RouterLink to="/signup">회원가입</RouterLink>
+          </p>
         </form>
       </div>
     </div>
@@ -356,5 +361,22 @@ async function handleLogin() {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.signup-link {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+}
+
+.signup-link a {
+  color: var(--color-primary, #3b82f6);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
 }
 </style>
