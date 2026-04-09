@@ -3,14 +3,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
 import { User, Lock, AlertTriangle } from 'lucide-vue-next';
-
+import { useCategoryStore } from '../stores/category';
 const router = useRouter();
 const userStore = useUserStore();
 
 const loginId = ref('');
 const password = ref('');
 const isLoading = ref(false);
-
+const categoryStore = useCategoryStore();
 async function handleLogin() {
   if (!loginId.value || !password.value) return;
   isLoading.value = true;
