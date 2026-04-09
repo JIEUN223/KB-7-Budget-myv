@@ -46,7 +46,7 @@ function spawnCoin() {
 }
 
 onMounted(() => {
-  intervalId = setInterval(spawnCoin, 150)
+  intervalId = setInterval(spawnCoin, 250)
 })
 
 onUnmounted(() => {
@@ -78,16 +78,16 @@ onUnmounted(() => {
 /* ── 토끼 마스코트 ── */
 .mascot {
   position: absolute;
-  bottom: 0;
+  bottom: -10px;
   right: 1.5rem;
   z-index: 2;
-  animation: mascot-walk 6s linear infinite;
+  animation: mascot-walk 10s linear infinite;
   will-change: transform;
 }
 
 .mascot__img {
   display: block;
-  width: 58px;
+  width: 110px;
   pointer-events: none;
   user-select: none;
 }
@@ -130,7 +130,7 @@ onUnmounted(() => {
 
 .coin-item {
   position: absolute;
-  bottom: 4px;
+  bottom: 10px;
   height: 11px;
   width: auto;
   pointer-events: none;
