@@ -1,23 +1,27 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '../stores/user'
-import { User, Lock, AlertTriangle } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '../stores/user';
+import { useTransactionStore } from '../stores/transaction';
+import { User, Lock, AlertTriangle } from 'lucide-vue-next';
 
-const router = useRouter()
-const userStore = useUserStore()
-
-const loginId = ref('')
-const password = ref('')
-const isLoading = ref(false)
+const router = useRouter();
+const userStore = useUserStore();
+const transactionStore = useTransactionStore();
+const loginId = ref('');
+const password = ref('');
+const isLoading = ref(false);
 
 async function handleLogin() {
-  if (!loginId.value || !password.value) return
-  isLoading.value = true
-  const success = await userStore.login(loginId.value, password.value)
-  isLoading.value = false
+  if (!loginId.value || !password.value) return;
+  isLoading.value = true;
+  const success = await userStore.login(loginId.value, password.value);
   if (success) {
-    router.push('/')
+    await transactionStore.loadTransactionsFromServer(userStore.currentUser.id);
+    isLoading.value = false;
+    router.push('/');
+  } else {
+    isLoading.value = false;
   }
 }
 </script>
@@ -125,7 +129,12 @@ async function handleLogin() {
   top: -30%;
   left: 50%;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(253, 211, 77, 0.5) 0%, rgba(251, 191, 36, 0.18) 45%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(253, 211, 77, 0.5) 0%,
+    rgba(251, 191, 36, 0.18) 45%,
+    transparent 70%
+  );
 }
 
 .login-bg__blob--2 {
@@ -133,7 +142,11 @@ async function handleLogin() {
   height: 300px;
   bottom: -8%;
   right: -15%;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, transparent 65%);
+  background: radial-gradient(
+    circle,
+    rgba(245, 158, 11, 0.28) 0%,
+    transparent 65%
+  );
 }
 
 .login-bg__blob--3 {
@@ -141,7 +154,11 @@ async function handleLogin() {
   height: 200px;
   top: 40%;
   left: -12%;
-  background: radial-gradient(circle, rgba(254, 243, 199, 0.7) 0%, transparent 68%);
+  background: radial-gradient(
+    circle,
+    rgba(254, 243, 199, 0.7) 0%,
+    transparent 68%
+  );
 }
 
 /* ── Wrap ── */
@@ -353,7 +370,9 @@ async function handleLogin() {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .signup-link {
