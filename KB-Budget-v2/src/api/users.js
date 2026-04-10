@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '/api',
+  // baseURL: '/api', <-- 기존 주석 처리
+  baseURL: 'https://kb-7-budget-myv-json-server.onrender.com', // Render에서 받은 실제 주소
 });
 
 export function fetchUser(id) {
