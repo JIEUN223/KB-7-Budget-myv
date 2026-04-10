@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://kb-7-budget-myv-json-server.onrender.com',
 });
 
 // export function fetchTransactions() {
